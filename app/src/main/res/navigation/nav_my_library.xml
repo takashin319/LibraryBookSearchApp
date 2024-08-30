@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_my_library"
+    app:startDestination="@id/myLibrarySelectFragment">
+
+    <fragment
+        android:id="@+id/myLibrarySelectFragment"
+        android:name="com.example.librarybooksearchapp.view.mylibrary.MyLibrarySelectFragment"
+        android:label="fragment_my_library_select"
+        tools:layout="@layout/fragment_my_library_select" >
+        <action
+            android:id="@+id/action_myLibrarySelectFragment_to_myLibraryDataFragment"
+            app:destination="@id/myLibraryDataFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/myLibraryDataFragment"
+        android:name="com.example.librarybooksearchapp.view.mylibrary.MyLibraryDataFragment"
+        android:label="MyLibraryDataFragment"
+        tools:layout="@layout/fragment_my_library_data" />
+</navigation>

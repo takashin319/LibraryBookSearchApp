@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_library_search"
+    app:startDestination="@id/areaSelectFragment">
+
+    <fragment
+        android:id="@+id/areaSelectFragment"
+        android:name="com.example.librarybooksearchapp.view.librarysearch.AreaSelectFragment"
+        android:label="fragment_area_select"
+        tools:layout="@layout/fragment_area_select" >
+        <action
+            android:id="@+id/action_areaSelectFragment_to_prefSelectFragment"
+            app:destination="@id/prefSelectFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/prefSelectFragment"
+        android:name="com.example.librarybooksearchapp.view.librarysearch.PrefSelectFragment"
+        android:label="fragment_pref_select"
+        tools:layout="@layout/fragment_pref_select" >
+        <action
+            android:id="@+id/action_prefSelectFragment_to_citySelectFragment"
+            app:destination="@id/citySelectFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/citySelectFragment"
+        android:name="com.example.librarybooksearchapp.view.librarysearch.CitySelectFragment"
+        android:label="fragment_city_select"
+        tools:layout="@layout/fragment_city_select" >
+        <action
+            android:id="@+id/action_citySelectFragment_to_libraryListFragment"
+            app:destination="@id/libraryListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/libraryListFragment"
+        android:name="com.example.librarybooksearchapp.view.librarysearch.LibrarySelectFragment"
+        android:label="fragment_library_list"
+        tools:layout="@layout/fragment_library_select" >
+        <action
+            android:id="@+id/action_libraryListFragment_to_libraryDataFragment"
+            app:destination="@id/libraryDataFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/libraryDataFragment"
+        android:name="com.example.librarybooksearchapp.view.librarysearch.LibraryDataFragment"
+        android:label="fragment_library_data"
+        tools:layout="@layout/fragment_library_data" />
+</navigation>

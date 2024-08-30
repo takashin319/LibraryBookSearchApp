@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="view_pager_offset">24dp</dimen>
+    <dimen name="view_pager_margin">8dp</dimen>
+    <dimen name="view_pager_total_margin">32dp</dimen>
+</resources>

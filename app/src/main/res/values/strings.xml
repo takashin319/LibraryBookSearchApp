@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">LibraryBookSearchApp</string>
+
+    <string name="home_library_search">図書館\n検索</string>
+    <string name="home_book_search">蔵書\n検索</string>
+    <string name="home_my_library">マイ\n図書館</string>
+    <string name="home_my_book">マイ\n本棚</string>
+
+    <string name="calil_link"><u>カーリルで開く</u></string>
+    <string name="btn_close">閉じる</string>
+
+    <string name="library_select_no_library">対応している図書館が見つかりませんでした</string>
+
+    <string name="library_data_btn_insert">マイ図書館に追加</string>
+
+    <string name="my_library_select_no_library">登録した図書館はありません</string>
+    <string name="my_library_data_btn_delete">マイ図書館から削除する</string>
+
+    <string name="book_search_txt_search_word">キーワードを入力</string>
+    <string name="book_search_btn_search">検索</string>
+    <string name="book_search_btn_show_more">さらに表示</string>
+
+    <string name="book_data_btn_add_my_book">マイ本棚に追加</string>
+    <string name="book_data_rental_status">マイ図書館周辺の蔵書</string>
+
+    <string name="my_book_select_txt_no_book">追加された本はありません</string>
+    <string name="my_book_data_btn_delete">マイ本棚から削除する</string>
+
+</resources>
