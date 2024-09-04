@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.example.librarybooksearchapp.R
@@ -64,33 +66,62 @@ class MyBookDataFragment : Fragment() {
         }
 
         // マイ本棚から削除するボタンをクリックしたときの処理
+//        binding.btnDeleteMyBook.setOnClickListener {
+//            lifecycleScope.launch {
+//                val job =
+//                    _myBookViewModel.deleteMyBook(_myBookViewModel.selectBook)
+//                job.join()
+//            }
+//            findNavController().popBackStack()
+//        }
+
         binding.btnDeleteMyBook.setOnClickListener {
             lifecycleScope.launch {
-                val job =
-                    _myBookViewModel.deleteMyBook(_myBookViewModel.selectBook)
-                job.join()
+                _myBookViewModel.deleteMyBook(_myBookViewModel.selectBook)
             }
             findNavController().popBackStack()
         }
 
         // 蔵書のカルーセル表示
+//        lifecycleScope.launch {
+//            val job = _myBookViewModel.getRentalStatus()
+//            job.join()
+//            if (_myBookViewModel.rentalStatusList.size != 0) {
+//                binding.pagerRentalStatus.adapter =
+//                    RentalStatusAdapter(_myBookViewModel.rentalStatusList)
+//                val margin = view.context.resources.getDimension(R.dimen.view_pager_margin)
+//                val offset = view.context.resources.getDimension(R.dimen.view_pager_offset)
+//                binding.pagerRentalStatus.offscreenPageLimit = 2
+//                binding.pagerRentalStatus.setPageTransformer { page, position ->
+//                    val offset = position * (2 * offset + margin)
+//                    page.translationX = -offset
+//                }
+//            } else {
+//                binding.txtNoLibrary.visibility = View.VISIBLE
+//            }
+//            binding.progressBar.visibility = View.GONE
+//        }
+
         lifecycleScope.launch {
-            val job = _myBookViewModel.getRentalStatus()
-            job.join()
-            if (_myBookViewModel.rentalStatusList.size != 0)
-                {
-                    binding.pagerRentalStatus.adapter = RentalStatusAdapter(_myBookViewModel.rentalStatusList)
-                    val margin = view.context.resources.getDimension(R.dimen.view_pager_margin)
-                    val offset = view.context.resources.getDimension(R.dimen.view_pager_offset)
-                    binding.pagerRentalStatus.offscreenPageLimit = 2
-                    binding.pagerRentalStatus.setPageTransformer { page, position ->
-                        val offset = position * (2 * offset + margin)
-                        page.translationX = -offset
+            _myBookViewModel.getRentalStatus()
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                _myBookViewModel.eventGetRentalStatus.collect {
+                    if (it.isNotEmpty()) {
+                        binding.pagerRentalStatus.adapter =
+                            RentalStatusAdapter(it)
+                        val margin = view.context.resources.getDimension(R.dimen.view_pager_margin)
+                        val offset = view.context.resources.getDimension(R.dimen.view_pager_offset)
+                        binding.pagerRentalStatus.offscreenPageLimit = 2
+                        binding.pagerRentalStatus.setPageTransformer { page, position ->
+                            val offset = position * (2 * offset + margin)
+                            page.translationX = -offset
+                        }
+                    } else {
+                        binding.txtNoLibrary.visibility = View.VISIBLE
                     }
-                } else {
-                binding.txtNoLibrary.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
+                }
             }
-            binding.progressBar.visibility = View.GONE
         }
 
         // 閉じるボタンをクリックしたときの処理

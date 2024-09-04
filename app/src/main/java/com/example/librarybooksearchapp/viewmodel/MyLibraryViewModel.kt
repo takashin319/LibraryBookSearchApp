@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.librarybooksearchapp.model.database.DataLibraryEntity
 import com.example.librarybooksearchapp.model.repository.MyLibraryRepository
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class MyLibraryViewModel(
@@ -28,11 +27,17 @@ class MyLibraryViewModel(
             .build()
 
     // マイ図書館から削除するメソッド
-    suspend fun deleteMyLibrary(dataLibraryEntity: DataLibraryEntity): Job {
-        val job =
-            viewModelScope.launch {
-                _myLibraryRepository.deleteMyLibrary(dataLibraryEntity)
-            }
-        return job
+//    suspend fun deleteMyLibrary(dataLibraryEntity: DataLibraryEntity): Job {
+//        val job =
+//            viewModelScope.launch {
+//                _myLibraryRepository.deleteMyLibrary(dataLibraryEntity)
+//            }
+//        return job
+//    }
+
+    suspend fun deleteMyLibrary(dataLibraryEntity: DataLibraryEntity) {
+        viewModelScope.launch {
+            _myLibraryRepository.deleteMyLibrary(dataLibraryEntity)
+        }
     }
 }

@@ -56,10 +56,17 @@ class MyLibraryDataFragment : Fragment() {
         }
 
         // マイ図書館から削除するボタンをクリックしたときの処理
+//        binding.btnDelete.setOnClickListener {
+//            lifecycleScope.launch {
+//                val job = _myLibraryViewModel.deleteMyLibrary(_myLibraryViewModel.selectLibrary)
+//                job.join()
+//            }
+//            findNavController().popBackStack()
+//        }
+
         binding.btnDelete.setOnClickListener {
             lifecycleScope.launch {
-                val job = _myLibraryViewModel.deleteMyLibrary(_myLibraryViewModel.selectLibrary)
-                job.join()
+                _myLibraryViewModel.deleteMyLibrary(_myLibraryViewModel.selectLibrary)
             }
             findNavController().popBackStack()
         }

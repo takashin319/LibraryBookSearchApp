@@ -11,7 +11,8 @@ import com.example.librarybooksearchapp.model.repository.GetBookDataRepository
 import com.example.librarybooksearchapp.model.repository.GetRentalStatusRepository
 import com.example.librarybooksearchapp.model.repository.MyBookRepository
 import com.example.librarybooksearchapp.model.repository.MyLibraryRepository
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -29,7 +30,14 @@ class BookSearchViewModel(
     val bookList = MutableLiveData<List<DataBookEntity>>()
     val searchStatus = MutableLiveData<Boolean>()
     var selectBook = DataBookEntity("", "", "", "", "", "", "")
-    val rentalStatusList = mutableListOf<DataRentalStatus>()
+//    val rentalStatusList = mutableListOf<DataRentalStatus>()
+
+    // ViewModelのイベントを通知するFlow
+    private val channelGetRentalStatus =
+        Channel<List<DataRentalStatus>>(capacity = Channel.UNLIMITED)
+    val eventGetRentalStatus = channelGetRentalStatus.receiveAsFlow()
+    private val channelInsertMyBook = Channel<DataBookEntity>(capacity = Channel.UNLIMITED)
+    val eventInsertMyBook = channelInsertMyBook.receiveAsFlow()
 
     // 検索結果をクリアするメソッド
     fun clearBookList() {
@@ -63,39 +71,72 @@ class BookSearchViewModel(
             .build()
 
     // 蔵書を検索するメソッド
-    fun getRentalStatus(): Job {
-        val job =
-            viewModelScope.launch {
-                rentalStatusList.clear()
-                val myLibraryList = _myLibraryRepository.selectMyLibrary()
-                for (i in myLibraryList.indices) {
-                    rentalStatusList.add(
-                        _getRentalStatusRepository.getRentalStatus(
-                            selectBook.isbn,
-                            myLibraryList[i],
-                        ),
-                    )
-                }
-            }
-        return job
-    }
+//    fun getRentalStatus(): Job {
+//        val job =
+//            viewModelScope.launch {
+//                rentalStatusList.clear()
+//                val myLibraryList = _myLibraryRepository.selectMyLibrary()
+//                for (i in myLibraryList.indices) {
+//                    rentalStatusList.add(
+//                        _getRentalStatusRepository.getRentalStatus(
+//                            selectBook.isbn,
+//                            myLibraryList[i],
+//                        ),
+//                    )
+//                }
+//            }
+//        return job
+//    }
 
-    // マイ本棚へ追加するメソッド
-    suspend fun insertMyBook(dataBookEntity: DataBookEntity): Job {
-        val job =
-            viewModelScope.launch {
-                _myBookRepository.insertMyBook(
-                    DataBookEntity(
-                        dataBookEntity.title,
-                        dataBookEntity.authors,
-                        dataBookEntity.publishedDate,
-                        dataBookEntity.description,
-                        dataBookEntity.isbn,
-                        dataBookEntity.thumbnail,
-                        LocalDateTime.now().toString(),
+    fun getRentalStatus() {
+        viewModelScope.launch {
+            val rentalStatusList = mutableListOf<DataRentalStatus>()
+            val myLibraryList = _myLibraryRepository.selectMyLibrary()
+            for (i in myLibraryList.indices) {
+                rentalStatusList.add(
+                    _getRentalStatusRepository.getRentalStatus(
+                        selectBook.isbn,
+                        myLibraryList[i],
                     ),
                 )
             }
-        return job
+            channelGetRentalStatus.send(rentalStatusList)
+        }
+    }
+
+    // マイ本棚へ追加するメソッド
+//    suspend fun insertMyBook(dataBookEntity: DataBookEntity): Job {
+//        val job =
+//            viewModelScope.launch {
+//                _myBookRepository.insertMyBook(
+//                    DataBookEntity(
+//                        dataBookEntity.title,
+//                        dataBookEntity.authors,
+//                        dataBookEntity.publishedDate,
+//                        dataBookEntity.description,
+//                        dataBookEntity.isbn,
+//                        dataBookEntity.thumbnail,
+//                        LocalDateTime.now().toString(),
+//                    ),
+//                )
+//            }
+//        return job
+//    }
+
+    suspend fun insertMyBook(dataBookEntity: DataBookEntity) {
+        viewModelScope.launch {
+            val data =
+                DataBookEntity(
+                    dataBookEntity.title,
+                    dataBookEntity.authors,
+                    dataBookEntity.publishedDate,
+                    dataBookEntity.description,
+                    dataBookEntity.isbn,
+                    dataBookEntity.thumbnail,
+                    LocalDateTime.now().toString(),
+                )
+            _myBookRepository.insertMyBook(data)
+            channelInsertMyBook.send(data)
+        }
     }
 }

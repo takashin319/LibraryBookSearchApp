@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.librarybooksearchapp.databinding.FragmentLibraryDataBinding
 import com.example.librarybooksearchapp.viewmodel.LibrarySearchViewModel
 import kotlinx.coroutines.launch
@@ -56,13 +58,24 @@ class LibraryDataFragment : Fragment() {
         }
 
         // マイ図書館に追加ボタンをクリックしたときの処理
+//        binding.btnInsertMyLibrary.setOnClickListener {
+//            lifecycleScope.launch {
+//                val job =
+//                    _librarySearchViewModel.insertMyLibrary(_librarySearchViewModel.selectLibrary)
+//                job.join()
+//            }
+//            Toast.makeText(context, "マイ図書館に追加しました。", Toast.LENGTH_SHORT).show()
+//        }
+
         binding.btnInsertMyLibrary.setOnClickListener {
             lifecycleScope.launch {
-                val job =
-                    _librarySearchViewModel.insertMyLibrary(_librarySearchViewModel.selectLibrary)
-                job.join()
+                _librarySearchViewModel.insertMyLibrary(_librarySearchViewModel.selectLibrary)
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    _librarySearchViewModel.eventInsertMyLibrary.collect {
+                        Toast.makeText(context, "マイ図書館に追加しました。", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
-            Toast.makeText(context, "マイ図書館に追加しました。", Toast.LENGTH_SHORT).show()
         }
 
         // 閉じるボタンをクリックしたときの処理

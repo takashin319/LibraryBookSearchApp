@@ -8,7 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.librarybooksearchapp.model.database.DataLibraryEntity
 import com.example.librarybooksearchapp.model.repository.GetLibraryDataRepository
 import com.example.librarybooksearchapp.model.repository.MyLibraryRepository
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class LibrarySearchViewModel(
@@ -23,6 +24,10 @@ class LibrarySearchViewModel(
 
     val libraryList = MutableLiveData<List<DataLibraryEntity>>()
     var selectLibrary = DataLibraryEntity("", "", "", "", "", "")
+
+    // ViewModelのイベントを通知するFlow
+    private val channelInsertMyLibrary = Channel<DataLibraryEntity>(capacity = Channel.UNLIMITED)
+    val eventInsertMyLibrary = channelInsertMyLibrary.receiveAsFlow()
 
     // 図書館リストを取得するメソッド
     fun getLibraryData() {
@@ -41,12 +46,19 @@ class LibrarySearchViewModel(
             .build()
 
     // マイ図書館へ追加するメソッド
-    suspend fun insertMyLibrary(dataLibraryEntity: DataLibraryEntity): Job {
-        val job =
-            viewModelScope.launch {
-                _myLibraryRepository.insertMyLibrary(dataLibraryEntity)
-            }
-        return job
+//    suspend fun insertMyLibrary(dataLibraryEntity: DataLibraryEntity): Job {
+//        val job =
+//            viewModelScope.launch {
+//                _myLibraryRepository.insertMyLibrary(dataLibraryEntity)
+//            }
+//        return job
+//    }
+
+    suspend fun insertMyLibrary(dataLibraryEntity: DataLibraryEntity) {
+        viewModelScope.launch {
+            _myLibraryRepository.insertMyLibrary(dataLibraryEntity)
+            channelInsertMyLibrary.send(dataLibraryEntity)
+        }
     }
 
     // 以下、都市を選択するための変数およびメソッド
