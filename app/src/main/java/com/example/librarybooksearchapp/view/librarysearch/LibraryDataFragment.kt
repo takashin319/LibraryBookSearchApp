@@ -60,27 +60,35 @@ class LibraryDataFragment : Fragment() {
         // マイ図書館に追加ボタンをクリックしたときの処理
 //        binding.btnInsertMyLibrary.setOnClickListener {
 //            lifecycleScope.launch {
-//                val job =
-//                    _librarySearchViewModel.insertMyLibrary(_librarySearchViewModel.selectLibrary)
-//                job.join()
+//                _librarySearchViewModel.insertMyLibrary(_librarySearchViewModel.selectLibrary)
+//                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                    _librarySearchViewModel.eventInsertMyLibrary.collect {
+//                        Toast.makeText(context, "マイ図書館に追加しました。", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
 //            }
-//            Toast.makeText(context, "マイ図書館に追加しました。", Toast.LENGTH_SHORT).show()
 //        }
 
         binding.btnInsertMyLibrary.setOnClickListener {
-            lifecycleScope.launch {
-                _librarySearchViewModel.insertMyLibrary(_librarySearchViewModel.selectLibrary)
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    _librarySearchViewModel.eventInsertMyLibrary.collect {
-                        Toast.makeText(context, "マイ図書館に追加しました。", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
+            _librarySearchViewModel.insertMyLibrary(_librarySearchViewModel.selectLibrary)
         }
 
         // 閉じるボタンをクリックしたときの処理
         binding.btnClose.setOnClickListener {
             listener!!.onClickBtnBack()
+        }
+
+        // ViewModelのFlowの購読
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                _librarySearchViewModel.eventInsertMyLibrary.collect {
+                    launch {
+                        Toast
+                            .makeText(context, "マイ図書館に追加しました。", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }
         }
     }
 

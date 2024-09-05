@@ -8,11 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.librarybooksearchapp.databinding.FragmentMyLibraryDataBinding
 import com.example.librarybooksearchapp.viewmodel.MyLibraryViewModel
-import kotlinx.coroutines.launch
 
 class MyLibraryDataFragment : Fragment() {
     private var _binding: FragmentMyLibraryDataBinding? = null
@@ -58,16 +56,13 @@ class MyLibraryDataFragment : Fragment() {
         // マイ図書館から削除するボタンをクリックしたときの処理
 //        binding.btnDelete.setOnClickListener {
 //            lifecycleScope.launch {
-//                val job = _myLibraryViewModel.deleteMyLibrary(_myLibraryViewModel.selectLibrary)
-//                job.join()
+//                _myLibraryViewModel.deleteMyLibrary(_myLibraryViewModel.selectLibrary)
 //            }
 //            findNavController().popBackStack()
 //        }
 
         binding.btnDelete.setOnClickListener {
-            lifecycleScope.launch {
-                _myLibraryViewModel.deleteMyLibrary(_myLibraryViewModel.selectLibrary)
-            }
+            _myLibraryViewModel.deleteMyLibrary(_myLibraryViewModel.selectLibrary)
             findNavController().popBackStack()
         }
 

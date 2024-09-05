@@ -27,15 +27,13 @@ class MyLibraryViewModel(
             .build()
 
     // マイ図書館から削除するメソッド
-//    suspend fun deleteMyLibrary(dataLibraryEntity: DataLibraryEntity): Job {
-//        val job =
-//            viewModelScope.launch {
-//                _myLibraryRepository.deleteMyLibrary(dataLibraryEntity)
-//            }
-//        return job
+//    suspend fun deleteMyLibrary(dataLibraryEntity: DataLibraryEntity) {
+//        viewModelScope.launch {
+//            _myLibraryRepository.deleteMyLibrary(dataLibraryEntity)
+//        }
 //    }
 
-    suspend fun deleteMyLibrary(dataLibraryEntity: DataLibraryEntity) {
+    fun deleteMyLibrary(dataLibraryEntity: DataLibraryEntity) {
         viewModelScope.launch {
             _myLibraryRepository.deleteMyLibrary(dataLibraryEntity)
         }

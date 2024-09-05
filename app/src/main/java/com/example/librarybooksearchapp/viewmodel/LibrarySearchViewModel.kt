@@ -46,15 +46,14 @@ class LibrarySearchViewModel(
             .build()
 
     // マイ図書館へ追加するメソッド
-//    suspend fun insertMyLibrary(dataLibraryEntity: DataLibraryEntity): Job {
-//        val job =
-//            viewModelScope.launch {
-//                _myLibraryRepository.insertMyLibrary(dataLibraryEntity)
-//            }
-//        return job
+//    suspend fun insertMyLibrary(dataLibraryEntity: DataLibraryEntity) {
+//        viewModelScope.launch {
+//            _myLibraryRepository.insertMyLibrary(dataLibraryEntity)
+//            channelInsertMyLibrary.send(dataLibraryEntity)
+//        }
 //    }
 
-    suspend fun insertMyLibrary(dataLibraryEntity: DataLibraryEntity) {
+    fun insertMyLibrary(dataLibraryEntity: DataLibraryEntity) {
         viewModelScope.launch {
             _myLibraryRepository.insertMyLibrary(dataLibraryEntity)
             channelInsertMyLibrary.send(dataLibraryEntity)
