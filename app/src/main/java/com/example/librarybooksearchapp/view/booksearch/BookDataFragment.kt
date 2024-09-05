@@ -68,69 +68,82 @@ class BookDataFragment : Fragment() {
         // マイ本棚に追加ボタンをクリックしたときの処理
 //        binding.btnInsertMyBook.setOnClickListener {
 //            lifecycleScope.launch {
-//                val job =
-//                    _bookSearchViewModel.insertMyBook(_bookSearchViewModel.selectBook)
-//                job.join()
+//                _bookSearchViewModel.insertMyBook(_bookSearchViewModel.selectBook)
+//                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                    _bookSearchViewModel.eventInsertMyBook.collect {
+//                        Toast.makeText(context, "マイ本棚に追加しました。", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
 //            }
-//            Toast.makeText(context, "マイ本棚に追加しました。", Toast.LENGTH_SHORT).show()
 //        }
 
         binding.btnInsertMyBook.setOnClickListener {
-            lifecycleScope.launch {
-                _bookSearchViewModel.insertMyBook(_bookSearchViewModel.selectBook)
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    _bookSearchViewModel.eventInsertMyBook.collect {
-                        Toast.makeText(context, "マイ本棚に追加しました。", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
+            _bookSearchViewModel.insertMyBook(_bookSearchViewModel.selectBook)
         }
 
         // 蔵書のカルーセル表示
 //        lifecycleScope.launch {
-//            val job = _bookSearchViewModel.getRentalStatus()
-//            job.join()
-//            if (_bookSearchViewModel.rentalStatusList.size != 0) {
-//                binding.pagerRentalStatus.adapter =
-//                    RentalStatusAdapter(_bookSearchViewModel.rentalStatusList)
-//                val margin = view.context.resources.getDimension(R.dimen.view_pager_margin)
-//                val offset = view.context.resources.getDimension(R.dimen.view_pager_offset)
-//                binding.pagerRentalStatus.offscreenPageLimit = 2
-//                binding.pagerRentalStatus.setPageTransformer { page, position ->
-//                    val offset = position * (2 * offset + margin)
-//                    page.translationX = -offset
+//            _bookSearchViewModel.getRentalStatus()
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                _bookSearchViewModel.eventGetRentalStatus.collect {
+//                    if (it.isNotEmpty()) {
+//                        binding.pagerRentalStatus.adapter =
+//                            RentalStatusAdapter(it)
+//                        val margin = view.context.resources.getDimension(R.dimen.view_pager_margin)
+//                        val offset = view.context.resources.getDimension(R.dimen.view_pager_offset)
+//                        binding.pagerRentalStatus.offscreenPageLimit = 2
+//                        binding.pagerRentalStatus.setPageTransformer { page, position ->
+//                            val offset = position * (2 * offset + margin)
+//                            page.translationX = -offset
+//                        }
+//                    } else {
+//                        binding.txtNoLibrary.visibility = View.VISIBLE
+//                    }
+//                    binding.progressBar.visibility = View.GONE
 //                }
-//            } else {
-//                binding.txtNoLibrary.visibility = View.VISIBLE
 //            }
-//            binding.progressBar.visibility = View.GONE
 //        }
 
-        lifecycleScope.launch {
-            _bookSearchViewModel.getRentalStatus()
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                _bookSearchViewModel.eventGetRentalStatus.collect {
-                    if (it.isNotEmpty()) {
-                        binding.pagerRentalStatus.adapter =
-                            RentalStatusAdapter(it)
-                        val margin = view.context.resources.getDimension(R.dimen.view_pager_margin)
-                        val offset = view.context.resources.getDimension(R.dimen.view_pager_offset)
-                        binding.pagerRentalStatus.offscreenPageLimit = 2
-                        binding.pagerRentalStatus.setPageTransformer { page, position ->
-                            val offset = position * (2 * offset + margin)
-                            page.translationX = -offset
-                        }
-                    } else {
-                        binding.txtNoLibrary.visibility = View.VISIBLE
-                    }
-                    binding.progressBar.visibility = View.GONE
-                }
-            }
-        }
+        // 蔵書情報の取得
+        _bookSearchViewModel.getRentalStatus()
 
         // 閉じるボタンをクリックしたときの処理
         binding.btnClose.setOnClickListener {
             listener!!.onClickBtnBack()
+        }
+
+        // ViewModelのFlowの購読
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    _bookSearchViewModel.eventInsertMyBook.collect {
+                        Toast
+                            .makeText(context, "マイ本棚に追加しました。", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+                launch {
+                    // 蔵書のカルーセル表示
+                    _bookSearchViewModel.eventGetRentalStatus.collect {
+                        if (it.isNotEmpty()) {
+                            binding.pagerRentalStatus.adapter =
+                                RentalStatusAdapter(it)
+                            val margin =
+                                view.context.resources.getDimension(R.dimen.view_pager_margin)
+                            val offset =
+                                view.context.resources.getDimension(R.dimen.view_pager_offset)
+                            binding.pagerRentalStatus.offscreenPageLimit = 2
+                            binding.pagerRentalStatus.setPageTransformer { page, position ->
+                                val offset = position * (2 * offset + margin)
+                                page.translationX = -offset
+                            }
+                        } else {
+                            binding.txtNoLibrary.visibility = View.VISIBLE
+                        }
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }
+            }
         }
     }
 

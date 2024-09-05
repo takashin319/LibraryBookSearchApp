@@ -73,15 +73,13 @@ class MyBookViewModel(
     }
 
     // マイ本棚から削除するメソッド
-//    suspend fun deleteMyBook(dataBook: DataBookEntity): Job {
-//        val job =
-//            viewModelScope.launch {
-//                _myBookRepository.deleteMyBook(dataBook)
-//            }
-//        return job
+//    suspend fun deleteMyBook(dataBook: DataBookEntity) {
+//        viewModelScope.launch {
+//            _myBookRepository.deleteMyBook(dataBook)
+//        }
 //    }
 
-    suspend fun deleteMyBook(dataBook: DataBookEntity) {
+    fun deleteMyBook(dataBook: DataBookEntity) {
         viewModelScope.launch {
             _myBookRepository.deleteMyBook(dataBook)
         }
